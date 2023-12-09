@@ -24,11 +24,11 @@ def parsed_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--input_dir",
 			help="input directory "\
-			"(default: %(default)s",
+			"(default: %(default)s)",
 			default="/afs/cern.ch/user/a/abelloni/BCAL/DATA")
     parser.add_argument("--output_dir",
 			help="output directory "\
-			"(default: %(default)s",
+			"(default: %(default)s)",
 			default="/afs/cern.ch/user/a/abelloni/BCAL/RESULTS")
     return parser.parse_args()
 
