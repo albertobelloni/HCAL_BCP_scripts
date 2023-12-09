@@ -1,4 +1,6 @@
 A little script designed to unpack and analyze CMS HB data received in an ILA.
+The (vast) majority of the code was written by Joseph Mariano:
+https://github.com/jmariano-cern/HcalBcpIlaAnalyzer
 
 ```
 Usage: analyze_rxdata.py [-h] [--input_dir INPUT_DIR] [--output_dir OUTPUT_DIR]
