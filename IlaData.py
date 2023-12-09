@@ -10,13 +10,21 @@ import os
 
 class IlaData:
     def __init__(self,datafile_path, analysis_dir):
+
+        # Some constants, probably depending
+        # on the type of data we are decoding
         self.headerline_num=0
         self.radixline_num=1
         self.placeholder_word='f7fb'
         self.frameword='bc'
         self.bc0word='7c'
         self.framelength=24
+
+        # Initialize empty array of data signals
+        # Later, we will fill it with all the
+        # strings in the header line that end with "[15:0]"
         self.rxdata_signals = []
+
         #   "datatype"   : (lowest_bit,highest_bit+1)
         self.framedict = {
             "Comma"      : (0,8)   ,
@@ -125,9 +133,14 @@ class IlaData:
             "TDC5"       : (0.0,0.0) ,
             "TDC4"       : (0.0,0.0) ,
         }
+
+        # Initialize some variables used to define output
         self.analysis_dir=analysis_dir
         self.logfile_ext=".txt"
         self.datafile_path=datafile_path
+
+        # Let us conclude with calling some internal functions
+        # These functions are called to initialize internal variables
         self.get_datafile_name()
         self.make_analysis_dir()
         self.get_logfile()
@@ -138,9 +151,13 @@ class IlaData:
         self.get_data()
         self.get_rxdata()
 
+    # Remeber that we pass a filename with the whole path:
+    # here we remove the path and the file extension
+    # Note: this works _unless_ the file name contains multiple "."
     def get_datafile_name(self):
         self.datafile_name = self.datafile_path.split('/')[-1].split('.')[0]
-        
+
+    # Stuff the variable "raw_data" with the whole content of the input file
     def get_raw_data(self):
         data_file=open(self.datafile_path,'r')
         self.raw_data=data_file.readlines()
@@ -166,6 +183,9 @@ class IlaData:
         for headernum,header in enumerate(self.headers):
             self.decode_dict[header] = self.radices[headernum]
 
+    # It seems that here we read the raw data and skip
+    # the lines with headers (headerline_num) and radices (?) (radixline_num)
+    # As of today, December 2023, these seem to be the first two rows
     def get_data(self):
         self.data={}
         for header in self.headers:
@@ -186,6 +206,9 @@ class IlaData:
                            self.invert_word(self.data[signal_name][wordnum])
         return inverted_data
 
+    # Unclear what the function trim_placeholders does
+    # Most dramatically, it fails on a file that Tullio prepared
+    # It calls itself recursively, and fails if the recursion does not close
     def trim_placeholders(self,data):
         placeholder_pos=data.find(self.placeholder_word)
         if (placeholder_pos > 0):
@@ -194,11 +217,15 @@ class IlaData:
             data=self.trim_placeholders(data)
         return data
 
+    # Here we _create_ the logfile: note that it is opened
+    # in "write" mode, but is immediately closed
+    # Guess: later, we will keep opening for "append" the file, with
+    # the open_log function, and keep closing it with the close_log function
     def get_logfile(self):
         self.logfile_name=self.analysis_dir+'/'\
                            +self.datafile_name+'/'+self.datafile_name\
                            +''+self.logfile_ext
-        self.logfile=open(self.logfile_name,'w')        
+        self.logfile=open(self.logfile_name,'w')
         self.logfile.close()
         
     def open_log(self):
@@ -206,7 +233,8 @@ class IlaData:
 
     def close_log(self):
         self.logfile.close()
-        
+
+    # Here start the functions to analyze the data
     def get_frames(self,data):
         self.open_log()
         frames = []
@@ -256,7 +284,12 @@ class IlaData:
 
     def process_rxdata(self,signal_name):
         inverted_data = self.invert_words(signal_name)
-        trimmed_data = self.trim_placeholders(inverted_data)
+        try:
+            trimmed_data = self.trim_placeholders(inverted_data)
+        except RecursionError as err:
+            print ("Failed to trim placeholders, too many iterations: {}".
+		   format(err.args[0]))
+            exit(-1)
         frames = self.get_frames(trimmed_data)
         processed_data = []
         for frame in frames:
