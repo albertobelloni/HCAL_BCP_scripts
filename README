@@ -1,0 +1,4 @@
+A little script designed to unpack and analyze CMS HB data received in an ILA.
+
+For details and usage instructions see
+    https://twiki.cern.ch/twiki/bin/view/Main/HcalBcp512#Data_Analysis
