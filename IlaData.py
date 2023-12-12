@@ -321,7 +321,7 @@ class IlaData:
             prev_vals[modframe]=capnum
         if passall:
             self.logfile.write(signal + " capIDrotation: TESTS PASSED\n")
-            print(signal + "capIDrotation: TESTS PASSED")
+            print("\t" + signal + "capIDrotation: TESTS PASSED")
 
         else:
             self.logfile.write("TEST FAILED: " + signal + " capIDrotation\n")
@@ -383,7 +383,7 @@ class IlaData:
                    + " stdev  = " + str(stdev))
         if passall:
             self.logfile.write(signal + " " +  datatype + ": TESTS PASSED\n")
-            print(signal + " " +  datatype + ": TESTS PASSED")
+            print("\t" + signal + " " +  datatype + ": TESTS PASSED")
 
         plt.hist(x, bins,histtype=u'step')
         plt.title(signal + " " + datatype + " histogram")
