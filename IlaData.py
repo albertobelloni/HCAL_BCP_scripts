@@ -420,8 +420,12 @@ class IlaData:
         for datatype in self.framedict:
             allclean = allclean & self.analyze_datatype(signal,datatype)
             plt.clf()
-        if allclean and not self.verbose:
-            print ("\033[F ALL OK")
+        if not self.verbose:
+            if allclean:
+                print ("\033[F\033[92m ALL OK\033[0m")
+            else:
+                print ("\033[F\033[91m ERRORS\033[0m")
+                
             
     def make_analysis_dir(self):
         if not os.path.isdir(self.analysis_dir):
