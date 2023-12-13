@@ -329,7 +329,8 @@ class IlaData:
         else:
             self.logfile.write("TEST FAILED: " + signal + " capIDrotation\n")
             self.logfile.write("     capseq: " + str(y) + "\n")
-            print ("\033[91mTEST FAILED:\033[0m " + signal + " capIDrotation")
+            print ("   \033[91mTEST FAILED:\033[0m " + \
+                   signal + " capIDrotation")
             print ("     capseq: " + str(y))
         plt.plot(x, y, 'o', color='black')
         plt.xlim(-0.5, 3.5)
@@ -376,14 +377,14 @@ class IlaData:
             passall = False
             self.logfile.write("TEST FAILED: " + signal + " "\
                                +  datatype + " mean  = " + str(av) + "\n")
-            print ("\033[92mTEST FAILED:\033[0m " + signal + " " +  datatype\
+            print ("   \033[91mTEST FAILED:\033[0m " + signal + " " +  datatype\
                    + " mean  = " + str(av))
         if ((stdev < self.std_limits[datatype][0]) or
             (stdev > self.std_limits[datatype][1])):
             passall = False
             self.logfile.write("TEST FAILED: " + signal + " "\
                                +  datatype + " stdev  = " + str(stdev) + "\n")
-            print ("TEST FAILED: " + signal + " " +  datatype\
+            print ("   \033[91mTEST FAILED:\033[0m " + signal + " " +  datatype\
                    + " stdev  = " + str(stdev))
         if passall:
             self.logfile.write(signal + " " +  datatype + ": TESTS PASSED\n")
@@ -429,8 +430,8 @@ class IlaData:
         if not self.verbose:
             if allclean:
                 print ("\033[F\033[92m ALL OK\033[0m")
-            else:
-                print ("\033[F\033[91m ERRORS\033[0m")
+            #else:
+            #    print ("\033[F\033[91m ERRORS\033[0m")
                 
             
     def make_analysis_dir(self):
