@@ -323,12 +323,13 @@ class IlaData:
         if passall:
             self.logfile.write(signal + " capIDrotation: TESTS PASSED\n")
             if self.verbose:
-                print("\t\t" + signal + "capIDrotation: TESTS PASSED")
+                print("\t\t" + signal + \
+                      "capIDrotation: \033[92mTESTS PASSED\033[0m")
 
         else:
             self.logfile.write("TEST FAILED: " + signal + " capIDrotation\n")
             self.logfile.write("     capseq: " + str(y) + "\n")
-            print ("TEST FAILED: " + signal + " capIDrotation")
+            print ("\033[91mTEST FAILED:\033[0m " + signal + " capIDrotation")
             print ("     capseq: " + str(y))
         plt.plot(x, y, 'o', color='black')
         plt.xlim(-0.5, 3.5)
@@ -375,7 +376,7 @@ class IlaData:
             passall = False
             self.logfile.write("TEST FAILED: " + signal + " "\
                                +  datatype + " mean  = " + str(av) + "\n")
-            print ("TEST FAILED: " + signal + " " +  datatype\
+            print ("\033[92mTEST FAILED:\033[0m " + signal + " " +  datatype\
                    + " mean  = " + str(av))
         if ((stdev < self.std_limits[datatype][0]) or
             (stdev > self.std_limits[datatype][1])):
@@ -387,7 +388,8 @@ class IlaData:
         if passall:
             self.logfile.write(signal + " " +  datatype + ": TESTS PASSED\n")
             if self.verbose:
-                print("\t\t" + signal + " " +  datatype + ": TESTS PASSED")
+                print("\t\t" + signal + " " +  datatype + \
+                      ": \033[92mTESTS PASSED\033[0m")
 
         plt.hist(x, bins,histtype=u'step')
         plt.title(signal + " " + datatype + " histogram")
