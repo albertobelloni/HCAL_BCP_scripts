@@ -415,10 +415,14 @@ class IlaData:
         self.logfile.write(signal)
         self.logfile.write("\n")
         self.logfile.write("================================================\n")
-        allclean = True
+        # allclean variable will combine output of test functions
+        # to produce a global return value, indicating whether
+        # all is ok or errors were found
         allclean = self.test_capids(signal)
         for datatype in self.framedict:
-            allclean = allclean & self.analyze_datatype(signal,datatype)
+            # update the value of allclean with the output of
+            # the latest datatype analysis
+            allclean &= self.analyze_datatype(signal,datatype)
             plt.clf()
         if not self.verbose:
             if allclean:
