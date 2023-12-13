@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 ################################################################################
-#usage: analyze_rxdata.py [-h] [-i INPUT_DIR] [-o OUTPUT_DIR]
+#usage: analyze_rxdata.py [-h] [-i INPUT_DIR] [-o OUTPUT_DIR] [-v]
 #
 #optional arguments:
 #  -h, --help            show this help message and exit
@@ -9,6 +9,7 @@
 #           input directory (default: /afs/cern.ch/user/a/abelloni/BCAL/DATA
 #  -o OUTPUT_DIR, --output_dir OUTPUT_DIR
 #           output directory (default: /afs/cern.ch/user/a/abelloni/BCAL/RESULTS
+#  -v, --verbose         verbosity (default: not verbose)
 #
 # The script will look for keys in the header of the input file that end with
 # "[15:0]", and interpret them as the RX data of interest
@@ -30,6 +31,11 @@ def parsed_args():
 			help="output directory "\
 			"(default: %(default)s)",
 			default="/afs/cern.ch/user/a/abelloni/BCAL/RESULTS")
+    parser.add_argument("-v","--verbose",
+                        action="store_true",
+			help="verbosity "\
+			"(default: not verbose)",
+			default=False)
     return parser.parse_args()
 
 def main(args):
@@ -39,9 +45,9 @@ def main(args):
     for data_file in [path.join(args.input_dir, file) \
 		      for file in listdir(args.input_dir)]:
         # print update to terminal
-        print (f"Analyzing: {data_file}")
+        print (f"\tAnalyzing: {data_file}")
         # create an IlaData object for the file
-        analyzer = IlaData(data_file, args.output_dir)
+        analyzer = IlaData(data_file, args.output_dir, args.verbose)
         # run the analysis
         analyzer.full_analyze()
 

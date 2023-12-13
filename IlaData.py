@@ -9,7 +9,7 @@ from numpy import mean,std
 import os
 
 class IlaData:
-    def __init__(self,datafile_path, analysis_dir):
+    def __init__(self,datafile_path, analysis_dir, verbose):
 
         # Some constants, probably depending
         # on the type of data we are decoding
@@ -138,7 +138,8 @@ class IlaData:
         self.analysis_dir=analysis_dir
         self.logfile_ext=".txt"
         self.datafile_path=datafile_path
-
+        self.verbose = verbose
+        
         # Let us conclude with calling some internal functions
         # These functions are called to initialize internal variables
         self.get_datafile_name()
@@ -321,7 +322,8 @@ class IlaData:
             prev_vals[modframe]=capnum
         if passall:
             self.logfile.write(signal + " capIDrotation: TESTS PASSED\n")
-            print("\t" + signal + "capIDrotation: TESTS PASSED")
+            if self.verbose:
+                print("\t\t" + signal + "capIDrotation: TESTS PASSED")
 
         else:
             self.logfile.write("TEST FAILED: " + signal + " capIDrotation\n")
@@ -338,6 +340,7 @@ class IlaData:
                     +'/'+signal+'/'+self.datafile_name+'_'\
                     +signal+'_capIDrotation.png')
         plt.clf()
+        return passall
 
     def analyze_datatype(self,signal,datatype):
         self.logfile.write("------------------------------------------------\n")
@@ -383,7 +386,8 @@ class IlaData:
                    + " stdev  = " + str(stdev))
         if passall:
             self.logfile.write(signal + " " +  datatype + ": TESTS PASSED\n")
-            print("\t" + signal + " " +  datatype + ": TESTS PASSED")
+            if self.verbose:
+                print("\t\t" + signal + " " +  datatype + ": TESTS PASSED")
 
         plt.hist(x, bins,histtype=u'step')
         plt.title(signal + " " + datatype + " histogram")
@@ -401,6 +405,7 @@ class IlaData:
         plt.savefig(self.analysis_dir+'/'+self.datafile_name+'/'+signal\
                     +'/'+self.datafile_name+'_'+signal+'_'+datatype+'.png')
         #plt.show()
+        return passall
 
     def analyze_signal(self,signal):
         if not os.path.isdir(self.analysis_dir+'/'+self.datafile_name\
@@ -410,11 +415,14 @@ class IlaData:
         self.logfile.write(signal)
         self.logfile.write("\n")
         self.logfile.write("================================================\n")
-        self.test_capids(signal)
+        allclean = True
+        allclean = self.test_capids(signal)
         for datatype in self.framedict:
-            self.analyze_datatype(signal,datatype)
+            allclean = allclean & self.analyze_datatype(signal,datatype)
             plt.clf()
-
+        if allclean and not self.verbose:
+            print ("\033[F ALL OK")
+            
     def make_analysis_dir(self):
         if not os.path.isdir(self.analysis_dir):
             os.mkdir(self.analysis_dir)
